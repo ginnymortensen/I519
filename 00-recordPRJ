@@ -1,0 +1,57 @@
+#!/usr/bin/bash
+
+# Genevieve Mortensen for I519
+# Project command record - Mortensen is the 12th name under the Student list in the People tab on Canvas, so the 12th contig will be analyzed.
+# Modified 11/28/2022
+
+# Create singularity container if you haven't already
+#	sudo singularity build gamortenPRJ.sif SingularityPRJ.def
+# *** To reproduce all steps execute 
+#	singularity exec -e gamortenPRJ.sif bash ./00-recordPRJ
+
+# Get genome data with curl as follows: 
+#	curl -OJX GET "https://api.ncbi.nlm.nih.gov/datasets/v1/genome/accession/GCA_000516895.1/download?include_annotation_type=GENOME_GFF,RNA_FASTA,CDS_FASTA,PROT_FASTA&filename=GCA_000516895.1.zip" -H "Accept: application/zip" --output "LocustGenome.fna"
+#   unzip the file
+#	unzip GCA_000516895.1.zip
+#   get the genome data and move it to the working directory and rename the file for clarity
+#	mv ncbi_dataset/data/GCA_000516895.1/GCA_000516895*.fna ./LocustGenome.fna
+
+# Enter the singularity
+#	singularity shell -e gamortenPRJ.sif
+
+# Create directory to house work if it doesn't already exist
+mkdir -p ~/prj/ASSEMBLY
+cd ~/prj/ASSEMBLY
+#   copy the genome data here
+cp ../LocustGenome.fna ./
+
+# Acquire the 12th contig as follows:
+#   sort by length, reverse order (seqkit default is small to large sort), decrease memory usage with -2 option
+seqkit sort -l -r -2 LocustGenome.fna > sorted-LocustGenome.fna 
+#   convert to tabular formatting by length so we can sort contigs by line
+seqkit fx2tab -l sorted-LocustGenome.fna > formatted-sorted-LocustGenome.fna
+#   pull out 12th line (the 12th contig)
+head formatted-sorted-LocustGenome.fna -n 12 | tail -1 > 12contig-LocustGenome.fna
+#   convert back to a fasta format so we can use other tools
+seqkit tab2fx 12contig-LocustGenome.fna -o 12contig-LocustGenome.fa
+#   check ID to make sure correct contig acquired
+grep ">" sorted-LocustGenome.fna | head -n 12 | tail -1
+grep ">" 12contig-LocustGenome.fa | head -n 12 | tail -1
+
+# Generate random reads using wgsim
+wgsim -e 0.01 -N 5000 -r 0.001 12contig-LocustGenome.fa r1.fq r2.fq
+#   check if reads match up to genome using blastn
+seqkit fq2fa r1.fq > r1.fa
+blastn -query r1.fa -subject LocustGenome.fa -outfmt 6 | sort -k9,9 -n > blastnViewR1
+
+# Perform assembly using SOAPdenovo2
+#   create configuration file first
+cp ../my.config ./
+#   run SOAPdenovo
+SOAPdenovo-63mer all -s my.config -o myasmb1 -p 1  1>log 2>err
+#   inspect output and show last 10 contig lengths
+egrep "length" *contig | tail -n 10
+#   show statistical output of assembly performance
+more myasmb1.scafStatistics
+
+
