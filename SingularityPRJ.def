@@ -4,7 +4,7 @@ From: ubuntu:20.04
 %post
 	apt -y update
 	apt -y install bc zip unzip wget tzdata
-	apt -y install build-essential git cmake zlib1g zlib1g-dev
+	apt -y install build-essential git cmake zlib1g zlib1g-dev curl
 
 
 	cd /opt
