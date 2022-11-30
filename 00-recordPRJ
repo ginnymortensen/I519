@@ -17,9 +17,10 @@ unzip GCA_000516895.1.zip
 
 # Create directory to house work if it doesn't already exist
 mkdir -p ASSEMBLY
+#   move the genome data there
+mv ncbi_dataset/data/GCA_000516895.1/GCA_000516895.1_LocustGenomeV1_genomic.fna ~/I519-PRJ/ASSEMBLY/LocustGenome.fna
+#   change directories to the created directory
 cd ASSEMBLY
-#   copy the genome data here
-cp ../LocustGenome.fna ./
 
 # Acquire the 12th contig as follows:
 #   sort by length, reverse order (seqkit default is small to large sort), decrease memory usage with -2 option
