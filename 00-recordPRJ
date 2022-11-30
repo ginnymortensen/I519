@@ -82,11 +82,18 @@ more default.scafStatistics
 #SOAPdenovo-63mer all -s wildtype.config -o wildtype -p 1>log-wildtype 2>err-wildtype
 
 # Assembly with different base sequencing error rates
-#   high base error rate
+#   high error rate
 #wgsim -e 0.01 -N 5000 -r 0.1 12contig-LocustGenome.fa r1-high.fq r2-high.fq
-
+#cp ../high.config ./
+#SOAPdenovo-63mer all -s high.config -o high -p 1>log-high 2>err-high
+#   low error rate
+#wgsim -e 0.01 -N 5000 -r 0.000 12contig-LocustGenome.fa r1-low.fq r2-low.fq
+#cp ../low.config ./
+#SOAPdenovo-63mer all -s low.config -o low -p 1>log-low 2>err-low
 
 # Assembly with single-end reads
-
+#wgsim -e 0.01 -N 5000 -r 0.001 12contig-LocustGenome.fa r1-single.fq /dev/null
+#cp ../single.config ./
+#SOAPdenovo-63mer all -s single.config -o single -p 1>log-single 2>err-single
 
 
