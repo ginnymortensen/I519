@@ -1,4 +1,4 @@
-# I519-PRJ
+# gamortenPRJ - submission for I519 Fall 2022 Project
 
 Project workflow for I519:
 
