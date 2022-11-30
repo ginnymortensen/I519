@@ -16,5 +16,5 @@ Project workflow for I519:
 
 
 
-*This file is hidden such as to not interfere with data acquisition step of record execution*
+*This README file is hidden such as to not interfere with data acquisition step of record execution*
 
