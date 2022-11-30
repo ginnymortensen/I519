@@ -1,8 +1,6 @@
 # I519-PRJ
 
-*This README is for github purposes only and can be deleted. The information in this README is identical to PRJ-README.md*
-
-Project for I519:
+Project workflow for I519:
 
 * Clone this repository then navigate to the folder.
 
