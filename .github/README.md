@@ -6,7 +6,7 @@ Project workflow for I519:
 
 `cd gamortenPRJ/`
 
-* Create singularity image file from .def file.
+* Load singularity module then create singularity image file from .def file.
 
 `singularity build --remote gamortenPRJ.sif SingularityPRJ.def`
 
