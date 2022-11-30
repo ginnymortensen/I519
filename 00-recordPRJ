@@ -35,7 +35,7 @@ seqkit tab2fx 12contig-LocustGenome.fna -o 12contig-LocustGenome.fa
 grep ">" sorted-LocustGenome.fna | head -n 12 | tail -1
 grep ">" 12contig-LocustGenome.fa | head -n 12 | tail -1
 
-# Generate random reads using wgsim with default parameters
+# Generate random paired-end reads using wgsim with default parameters
 wgsim -e 0.01 -N 5000 -r 0.001 12contig-LocustGenome.fa r1d.fq r2d.fq
 #   check if reads match up to genome using blastn. convert to fasta file first using seqkit fq2fa
 seqkit fq2fa r1d.fq > r1d.fa
@@ -51,7 +51,11 @@ egrep "length" *contig | tail -n 10
 #   show statistical output of assembly performance
 more default.scafStatistics
 
-# Perform assembly with long reads versus short reads
+# Assembly with long reads versus short reads
+# Assembly with different sequencing depths
+# Assembly with different mutation rates
+# Assembly with different base sequencing error rate
+# Assembly with single-end reads
 
 
 
