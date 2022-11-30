@@ -18,7 +18,7 @@ unzip GCA_000516895.1.zip
 # Create directory to house work if it doesn't already exist
 mkdir -p ASSEMBLY
 #   move the genome data there
-mv ncbi_dataset/data/GCA_000516895.1/GCA_000516895.1_LocustGenomeV1_genomic.fna ~/I519-PRJ/ASSEMBLY/LocustGenome.fna
+mv ncbi_dataset/data/GCA_000516895.1/GCA_000516895.1_LocustGenomeV1_genomic.fna ~/gamortenPRJ/ASSEMBLY/LocustGenome.fna
 #   change directories to the created directory
 cd ASSEMBLY
 
