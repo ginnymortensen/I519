@@ -4,7 +4,7 @@ Project workflow for I519:
 
 * Clone this repository then navigate to the folder.
 
-`cd I519-PRJ/`
+`cd gamortenPRJ/`
 
 * Create singularity image file from .def file.
 
