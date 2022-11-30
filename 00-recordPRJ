@@ -35,20 +35,23 @@ seqkit tab2fx 12contig-LocustGenome.fna -o 12contig-LocustGenome.fa
 grep ">" sorted-LocustGenome.fna | head -n 12 | tail -1
 grep ">" 12contig-LocustGenome.fa | head -n 12 | tail -1
 
-# Generate random reads using wgsim
-wgsim -e 0.01 -N 5000 -r 0.001 12contig-LocustGenome.fa r1.fq r2.fq
-#   check if reads match up to genome using blastn
-seqkit fq2fa r1.fq > r1.fa
-blastn -query r1.fa -subject LocustGenome.fa -outfmt 6 | sort -k9,9 -n > blastnViewR1
+# Generate random reads using wgsim with default parameters
+wgsim -e 0.01 -N 5000 -r 0.001 12contig-LocustGenome.fa r1d.fq r2d.fq
+#   check if reads match up to genome using blastn. convert to fasta file first using seqkit fq2fa
+seqkit fq2fa r1d.fq > r1d.fa
+blastn -query r1d.fa -subject 12contig-LocustGenome.fa -outfmt 6 | sort -k9,9 -n > blastnViewR1Default
 
-# Perform assembly using SOAPdenovo2
+# Perform assembly using SOAPdenovo2 with default parameters
 #   create configuration file first
 cp ../my.config ./
-#   run SOAPdenovo
-SOAPdenovo-63mer all -s my.config -o myasmb1 -p 1  1>log 2>err
+#   run SOAPdenovo2 with default parameters
+SOAPdenovo-63mer all -s my.config -o default -p 1 1>log 2>err
 #   inspect output and show last 10 contig lengths
 egrep "length" *contig | tail -n 10
 #   show statistical output of assembly performance
-more myasmb1.scafStatistics
+more default.scafStatistics
+
+# Perform assembly with long reads versus short reads
+
 
 
