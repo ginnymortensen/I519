@@ -14,3 +14,5 @@ Project workflow for I519:
 
 `singularity exec -e gamortenPRJ.sif bash ./00-recordPRJ`
 
+*This file is hidden such as to not interfere with data acquisition step*
+
