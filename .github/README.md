@@ -3,7 +3,7 @@
 Project workflow for I519:
 
 * Clone this repository then navigate to the folder.
-* 
+ 
 `git clone https://github.com/ginnymortensen/gamortenPRJ`
 
 `cd gamortenPRJ`
