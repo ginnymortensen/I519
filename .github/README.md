@@ -14,7 +14,7 @@ Project workflow for I519:
 
 `singularity pull --arch amd64 library://gamorten/prj/gamorten-prj.sif:i519-fall`
 
-* Execute record file on image file to reproduce full project work (15-20 minutes to complete).
+* Execute record file on image file to reproduce full project work (<30 minutes to complete).
 
 `singularity exec -e gamorten-prj.sif_i519-fall.sif bash ./00-recordPRJ`
 
