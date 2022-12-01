@@ -34,6 +34,8 @@ seqkit tab2fx 12contig-LocustGenome.fna -o 12contig-LocustGenome.fa
 #   check ID to make sure correct contig acquired
 grep ">" sorted-LocustGenome.fna | head -n 12 | tail -1
 grep ">" 12contig-LocustGenome.fa | head -n 12 | tail -1
+#   check length of contig to make sure it is >= 80,000 nt
+seqkit fx2tab --length --name --header-line 12contig-LocustGenome.fa
 
 # Generate random paired-end reads using wgsim with default parameters
 wgsim -e 0.01 -N 5000 -r 0.001 12contig-LocustGenome.fa r1d.fq r2d.fq
@@ -53,47 +55,47 @@ more default.scafStatistics
 
 # Assembly with long reads versus short reads
 #   short reads
-#wgsim -e 0.01 -N 5000 -r 0.001 -1 35 -2 35 12contig-LocustGenome.fa r1-short.fq r2-short.fq
-#cp ../short.config ./
-#SOAPdenovo-63mer all -s short.config -o short -p 1 1>log-short 2>err-short
+wgsim -e 0.01 -N 5000 -r 0.001 -1 35 -2 35 12contig-LocustGenome.fa r1-short.fq r2-short.fq
+cp ../configs/short.config ./
+SOAPdenovo-63mer all -s short.config -o short -p 1 1>log-short 2>err-short
 #   long reads
-#wgsim -e 0.01 -N 5000 -r 0.001 -1 140 -2 140 12contig-LocustGenome.fa r1-long.fq r2-long.fq
-#cp ../long.config ./
-#SOAPdenovo-63mer all -s long.config -o long -p 1 1>log-long 2>err-long
+wgsim -e 0.01 -N 5000 -r 0.001 -1 140 -2 140 12contig-LocustGenome.fa r1-long.fq r2-long.fq
+cp ../configs/long.config ./
+SOAPdenovo-63mer all -s long.config -o long -p 1 1>log-long 2>err-long
 
 # Assembly with different sequencing depths
 #   large depth
-#wgsim -e 0.01 -N 10000 -r 0.001 12contig-LocustGenome.fa r1-large.fq r2-large.fq
-#cp ../large.config ./
-#SOAPdenovo-63mer all -s large.config -o large -p 1 1>log-large 2>err-large
+wgsim -e 0.01 -N 10000 -r 0.001 12contig-LocustGenome.fa r1-large.fq r2-large.fq
+cp ../configs/large.config ./
+SOAPdenovo-63mer all -s large.config -o large -p 1 1>log-large 2>err-large
 #   small depth
-#wgsim -e 0.01 -N 2500 -r 0.001 12contig-LocustGenome.fa r1-small.fq r2-small.fq
-#cp ../small.config ./
-#SOAPdenovo-63mer all -s small.config -o small -p 1 1>log-small 2>err-small
+wgsim -e 0.01 -N 2500 -r 0.001 12contig-LocustGenome.fa r1-small.fq r2-small.fq
+cp ../configs/small.config ./
+SOAPdenovo-63mer all -s small.config -o small -p 1 1>log-small 2>err-small
 
 # Assembly with different mutation rates
 #   high mutation rate
-#wgsim -e 0.1 -N 5000 -r 0.001 12contig-LocustGenome.fa r1-mutated.fq r2-mutated.fq
-#cp ../mutated.config ./
-#SOAPdenovo-63mer all -s mutated.config -o mutated -p 1>log-mutated 2>err-mutated
+wgsim -e 0.1 -N 5000 -r 0.001 12contig-LocustGenome.fa r1-mutated.fq r2-mutated.fq
+cp ../configs/mutated.config ./
+SOAPdenovo-63mer all -s mutated.config -o mutated -p 1>log-mutated 2>err-mutated
 #   low mutation rate
-#wgsim -e 0.001 -N 5000 -r 0.001 12contig-LocustGenome.fa r1-wildtype.fq r2-wildtype.fq
-#cp ../wildtype.config ./
-#SOAPdenovo-63mer all -s wildtype.config -o wildtype -p 1>log-wildtype 2>err-wildtype
+wgsim -e 0.001 -N 5000 -r 0.001 12contig-LocustGenome.fa r1-wildtype.fq r2-wildtype.fq
+cp ../configs/wildtype.config ./
+SOAPdenovo-63mer all -s wildtype.config -o wildtype -p 1>log-wildtype 2>err-wildtype
 
 # Assembly with different base sequencing error rates
 #   high error rate
-#wgsim -e 0.01 -N 5000 -r 0.1 12contig-LocustGenome.fa r1-high.fq r2-high.fq
-#cp ../high.config ./
-#SOAPdenovo-63mer all -s high.config -o high -p 1>log-high 2>err-high
+wgsim -e 0.01 -N 5000 -r 0.1 12contig-LocustGenome.fa r1-high.fq r2-high.fq
+cp ../configs/high.config ./
+SOAPdenovo-63mer all -s high.config -o high -p 1>log-high 2>err-high
 #   low error rate
-#wgsim -e 0.01 -N 5000 -r 0.000 12contig-LocustGenome.fa r1-low.fq r2-low.fq
-#cp ../low.config ./
-#SOAPdenovo-63mer all -s low.config -o low -p 1>log-low 2>err-low
+wgsim -e 0.01 -N 5000 -r 0.000 12contig-LocustGenome.fa r1-low.fq r2-low.fq
+cp ../configs/low.config ./
+SOAPdenovo-63mer all -s low.config -o low -p 1>log-low 2>err-low
 
 # Assembly with single-end reads
-#wgsim -e 0.01 -N 5000 -r 0.001 12contig-LocustGenome.fa r1-single.fq /dev/null
-#cp ../single.config ./
-#SOAPdenovo-63mer all -s single.config -o single -p 1>log-single 2>err-single
+wgsim -e 0.01 -N 5000 -r 0.001 12contig-LocustGenome.fa r1-single.fq /dev/null
+cp ../configs/single.config ./
+SOAPdenovo-63mer all -s single.config -o single -p 1>log-single 2>err-single
 
 
