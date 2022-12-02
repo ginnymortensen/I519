@@ -20,7 +20,7 @@
 
 **3.** Execute record file on image file to reproduce full project work (<30 minutes to complete).
 
-`singularity exec -e gamorten-prj.sif_i519-fall.sif bash ./00-recordPRJ`
+`singularity exec -e gamorten-prj.sif_i519-fall.sif bash ./gamortenPRJ/00-recordPRJ`
 
 *This README file is hidden such as to not interfere with data acquisition step of record execution*
 
