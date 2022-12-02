@@ -1,16 +1,26 @@
 # gamortenPRJ - submission for I519 Fall 2022 Project
 
-Project workflow for I519:
+## Project workflow for I519:
 
-* Clone this repository then navigate to the folder.
+**1.** Clone this repository then navigate to the folder.
+ 
+`git clone https://github.com/ginnymortensen/gamortenPRJ`
 
-`cd gamortenPRJ/`
+`cd gamortenPRJ`
 
-* Load singularity module then create singularity image file from .def file.
+**2.** Load singularity module then pull project image from cloud.sylabs.io
 
-`singularity build --remote gamortenPRJ.sif SingularityPRJ.def`
+`module load singularity`
 
-* Execute record file on image file to reproduce full project work (15-20 minutes to complete).
+`singularity pull --arch amd64 library://gamorten/prj/gamorten-prj.sif:i519-fall`
 
-`singularity exec -e gamortenPRJ.sif bash ./00-recordPRJ`
+- Option to build image locally
+
+`singularity build --remote gamorten-prj.sif SingularityPRJ.def`
+
+**3.** Execute record file on image file to reproduce full project work (<30 minutes to complete).
+
+`singularity exec -e gamorten-prj.sif_i519-fall.sif bash ./gamortenPRJ/00-recordPRJ`
+
+*This README file is hidden such as to not interfere with data acquisition step of record execution*
 
