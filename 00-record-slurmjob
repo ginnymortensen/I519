@@ -1,0 +1,102 @@
+# Genevieve Mortensen for I519
+# Project command record - Mortensen is the 12th name under the Student list in the People tab on Canvas, so the 12th contig will be analyzed.
+# Modified 11/28/2022
+
+# Create singularity container if you haven't already
+#	singularity build --remote gamortenPRJ.sif SingularityPRJ.def
+# *** To reproduce all steps execute 
+#	singularity exec -e gamortenPRJ.sif bash ./00-recordPRJ
+
+# Navigate to the project repository
+cd gamortenPRJ
+# Get genome data with curl as follows: 
+curl -OJX GET "https://api.ncbi.nlm.nih.gov/datasets/v1/genome/accession/GCA_000516895.1/download?include_annotation_type=GENOME_GFF,RNA_FASTA,CDS_FASTA,PROT_FASTA&filename=GCA_000516895.1.zip" -H "Accept: application/zip" --output "LocustGenome.fna"
+#   unzip the file
+unzip GCA_000516895.1.zip
+
+# Enter the singularity
+singularity shell -e gamortenPRJ.sif
+
+# Create directory to house work if it doesn't already exist
+mkdir -p ASSEMBLY
+#   move the genome data there
+mv ncbi_dataset/data/GCA_000516895.1/GCA_000516895.1_LocustGenomeV1_genomic.fna ASSEMBLY/LocustGenome.fna
+#   change directories to the created directory
+cd ASSEMBLY
+
+# Acquire the 12th contig as follows:
+#   sort by length, reverse order (seqkit default is small to large sort), decrease memory usage with -2 option
+seqkit sort -l -r -2 LocustGenome.fna > sorted-LocustGenome.fna 
+#   convert to tabular formatting by length so we can sort contigs by line
+seqkit fx2tab -l sorted-LocustGenome.fna > formatted-sorted-LocustGenome.fna
+#   pull out 12th line (the 12th contig)
+head formatted-sorted-LocustGenome.fna -n 12 | tail -1 > 12contig-LocustGenome.fna
+#   convert back to a fasta format so we can use other tools
+seqkit tab2fx 12contig-LocustGenome.fna -o 12contig-LocustGenome.fa
+#   check ID to make sure correct contig acquired
+grep ">" sorted-LocustGenome.fna | head -n 12 | tail -1
+grep ">" 12contig-LocustGenome.fa | head -n 12 | tail -1
+#   check length of contig to make sure it is >= 80,000 nt
+seqkit fx2tab --length --name --header-line 12contig-LocustGenome.fa
+
+# Generate random paired-end reads using wgsim with default parameters
+wgsim -e 0.01 -N 5000 -r 0.001 12contig-LocustGenome.fa r1d.fq r2d.fq
+#   check if reads match up to genome using blastn. convert to fasta file first using seqkit fq2fa
+seqkit fq2fa r1d.fq > r1d.fa
+blastn -query r1d.fa -subject 12contig-LocustGenome.fa -outfmt 6 | sort -k9,9 -n > blastnViewR1Default
+
+# Perform assembly using SOAPdenovo2 with default parameters
+#   copy configuration file first
+cp ../my.config ./
+#   run SOAPdenovo2 with default parameters
+SOAPdenovo-63mer all -s my.config -o default -p 1 1>log 2>err
+#   inspect output and show last 10 contig lengths
+egrep "length" *contig | tail -n 10
+#   show statistical output of assembly performance
+more default.scafStatistics
+
+# Assembly with long reads versus short reads
+#   short reads
+wgsim -e 0.01 -N 5000 -r 0.001 -1 35 -2 35 12contig-LocustGenome.fa r1-short.fq r2-short.fq
+cp ../configs/short.config ./
+SOAPdenovo-63mer all -s short.config -o short -p 1 1>log-short 2>err-short
+#   long reads
+wgsim -e 0.01 -N 5000 -r 0.001 -1 140 -2 140 12contig-LocustGenome.fa r1-long.fq r2-long.fq
+cp ../configs/long.config ./
+SOAPdenovo-63mer all -s long.config -o long -p 1 1>log-long 2>err-long
+
+# Assembly with different sequencing depths
+#   large depth
+wgsim -e 0.01 -N 10000 -r 0.001 12contig-LocustGenome.fa r1-large.fq r2-large.fq
+cp ../configs/large.config ./
+SOAPdenovo-63mer all -s large.config -o large -p 1 1>log-large 2>err-large
+#   small depth
+wgsim -e 0.01 -N 2500 -r 0.001 12contig-LocustGenome.fa r1-small.fq r2-small.fq
+cp ../configs/small.config ./
+SOAPdenovo-63mer all -s small.config -o small -p 1 1>log-small 2>err-small
+
+# Assembly with different mutation rates
+#   high mutation rate
+wgsim -e 0.1 -N 5000 -r 0.001 12contig-LocustGenome.fa r1-mutated.fq r2-mutated.fq
+cp ../configs/mutated.config ./
+SOAPdenovo-63mer all -s mutated.config -o mutated -p 1>log-mutated 2>err-mutated
+#   low mutation rate
+wgsim -e 0.001 -N 5000 -r 0.001 12contig-LocustGenome.fa r1-wildtype.fq r2-wildtype.fq
+cp ../configs/wildtype.config ./
+SOAPdenovo-63mer all -s wildtype.config -o wildtype -p 1>log-wildtype 2>err-wildtype
+
+# Assembly with different base sequencing error rates
+#   high error rate
+wgsim -e 0.01 -N 5000 -r 0.1 12contig-LocustGenome.fa r1-high.fq r2-high.fq
+cp ../configs/high.config ./
+SOAPdenovo-63mer all -s high.config -o high -p 1>log-high 2>err-high
+#   low error rate
+wgsim -e 0.01 -N 5000 -r 0.000 12contig-LocustGenome.fa r1-low.fq r2-low.fq
+cp ../configs/low.config ./
+SOAPdenovo-63mer all -s low.config -o low -p 1>log-low 2>err-low
+
+# Assembly with single-end reads
+wgsim -e 0.01 -N 5000 -r 0.001 12contig-LocustGenome.fa r1-single.fq /dev/null
+cp ../configs/single.config ./
+SOAPdenovo-63mer all -s single.config -o single -p 1>log-single 2>err-single
+
