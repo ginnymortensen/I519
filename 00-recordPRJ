@@ -47,7 +47,7 @@ blastn -query r1d.fa -subject 12contig-LocustGenome.fa -outfmt 6 | sort -k9,9 -n
 
 # Perform assembly using SOAPdenovo2 with default parameters
 #   copy configuration file first
-cp ../my.config ./
+cp ../configs/my.config ./
 #   run SOAPdenovo2 with default parameters
 SOAPdenovo-63mer all -s my.config -o default -p 1 1>log 2>err
 #   inspect output and show last 10 contig lengths
