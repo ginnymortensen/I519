@@ -1,0 +1,7 @@
+#TEST 1
+
+wgsim -e 0 -N 100000 -r 0 -1 80 12contig-LocustGenome.fa -d 80 -1 80 -2 80 r1pair.fq r2pair.fq
+SOAPdenovo-63mer all -s my.config -o paired -p 1 1>log 2>err
+seqkit sort -l -r -2 paired.scafSeq > sorted-scafSeq-pair
+
+#TEST 2
