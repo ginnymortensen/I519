@@ -4,7 +4,7 @@
 
 **1.** Clone this repository then navigate to the folder.
  
-`git clone https://github.com/ginnymortensen/gamortenPRJ`
+`git clone https://github.com/ginnymortensen/gamorten-I529`
 
 `cd gamortenPRJ`
 
